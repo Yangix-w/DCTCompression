@@ -20,7 +20,7 @@ public class DctService {
         // Il parametro 'true' applica lo scaling ortonormale.
         dct2.forward(f, true);
 
-        // 3. Taglio delle frequenze: azzera i coefficienti con k + l > d
+        // 3. Taglio delle frequenze: azzera i coefficienti con k + l >= d
         for (int k = 0; k < F; k++) {
             for (int l = 0; l < F; l++) {
                 if (k + l >= d) {
