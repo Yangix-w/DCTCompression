@@ -23,7 +23,7 @@ public class DctService {
         // 3. Taglio delle frequenze: azzera i coefficienti con k + l > d
         for (int k = 0; k < F; k++) {
             for (int l = 0; l < F; l++) {
-                if (k + l > d) {
+                if (k + l >= d) {
                     f[k][l] = 0.0;
                 }
             }
