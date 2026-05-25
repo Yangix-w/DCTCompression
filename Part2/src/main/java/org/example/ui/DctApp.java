@@ -1,13 +1,9 @@
 package org.example.ui;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 
 public class DctApp {
 
@@ -17,8 +13,6 @@ public class DctApp {
     private JFrame frame;
     private JLabel imageLabel;
     private JLabel outputLabel;
-    private BufferedImage loadedImage;
-    private File loadedFile;
 
     // Controls
     private JSpinner spinnerF;
@@ -27,9 +21,11 @@ public class DctApp {
     private JButton applyBtn;
     private JButton loadBtn;
 
+    DctController controller = new DctController();
+
     public DctApp() {
         createUI();
-        attachListeners();
+        controller.attachListeners(loadBtn,applyBtn, spinnerF, spinnerD, outputLabel, frame, imageLabel);
     }
 
     private void createUI() {
@@ -104,7 +100,7 @@ public class DctApp {
         imageLabel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                updateImageIcon();
+                controller.updateImageIcon(imageLabel);
             }
         });
 
@@ -119,77 +115,9 @@ public class DctApp {
         frame.add(splitPane, BorderLayout.CENTER);
     }
 
-    private void attachListeners() {
-        loadBtn.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(new FileNameExtensionFilter("BMP images", "bmp"));
-            fileChooser.showOpenDialog(frame);
-            try {
-                File file = fileChooser.getSelectedFile();
-                if (file != null) {
-                    loadedFile = file;
-                    loadedImage = ImageIO.read(loadedFile);
-                    SwingUtilities.invokeLater(() -> {
-                        updateImageIcon();
-                        applyBtn.setEnabled(true);
-                    });
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Errore caricamento immagine: " + ex.getMessage());
-            }
-        });
-
-        applyBtn.addActionListener(e -> {
-            if (loadedFile == null) {
-                JOptionPane.showMessageDialog(frame, "Carica un'immagine prima di applicare la DCT.");
-                return;
-            }
-            int F = (int) spinnerF.getValue();
-            int d = (int) spinnerD.getValue();
-            applyBtn.setEnabled(false);
-            outputLabel.setText("Elaborazione in corso...");
-            new SwingWorker<BufferedImage, Void>() {
-                @Override
-                protected BufferedImage doInBackground() throws Exception {
-                    return new org.example.core.ImageService().processImage(loadedFile, F, d);
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        BufferedImage out = get();
-                        outputLabel.setIcon(scaledIcon(out, outputLabel.getWidth(), outputLabel.getHeight()));
-                        outputLabel.setText(null);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(frame, "Errore: " + ex.getMessage());
-                    } finally {
-                        applyBtn.setEnabled(true);
-                    }
-                }
-            }.execute();
-        });
-    }
-
     public void show() {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-    static ImageIcon scaledIcon(BufferedImage img, int maxW, int maxH) {
-        double scale = Math.min((double) maxW / img.getWidth(), (double) maxH / img.getHeight());
-        return new ImageIcon(img.getScaledInstance((int)(img.getWidth()*scale), (int)(img.getHeight()*scale), Image.SCALE_SMOOTH));
-    }
-
-    // scale currently loaded image to fit the imageLabel's size
-    private void updateImageIcon() {
-        if (loadedImage == null) return;
-        int w = imageLabel.getWidth();
-        int h = imageLabel.getHeight();
-        if (w <= 0 || h <= 0) return;
-        imageLabel.setIcon(scaledIcon(loadedImage, w, h));
-        imageLabel.setText(null);
     }
 
     public static void main(String[] args) {
