@@ -1,17 +1,21 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.ejml.simple.SimpleMatrix;
+import org.example.custom_dct.DCT;
+
 public class Main {
     static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+        DCT dct = new DCT();
+        SimpleMatrix f = new SimpleMatrix(new double[][]{
+                {1, 2, 3},
+                {4, 5, 6},
+                {7, 8, 9}
+        });
+        SimpleMatrix c = dct.dct2(f);
+        System.out.println("DCT of f:");
+        c.print();
+        SimpleMatrix f_reconstructed = dct.idct2(c);
+        System.out.println("Reconstructed f:");
+        f_reconstructed.print();
     }
 }
