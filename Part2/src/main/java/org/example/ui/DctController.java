@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class DctController {
     private BufferedImage loadedImage;
     private File loadedFile;
+    private BufferedImage outputImage;
 
     public DctController() {
         
@@ -19,6 +20,7 @@ public class DctController {
     protected void attachListeners(
         JButton loadBtn,
         JButton applyBtn,
+        JButton saveBtn,
         JSpinner spinnerF,
         JSpinner spinnerD,
         JLabel outputLabel,
@@ -26,6 +28,17 @@ public class DctController {
         JLabel imageLabel
     ) {
         loadBtn.addActionListener(e -> {
+            if (loadedImage != null) {
+                loadedImage = null;
+                loadedFile = null;
+                outputImage = null;
+                imageLabel.setIcon(null);
+                imageLabel.setText("Nessuna immagine caricata");
+                outputLabel.setIcon(null);
+                outputLabel.setText("Output");
+                applyBtn.setEnabled(false);
+            }
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(new FileNameExtensionFilter("BMP images", "bmp"));
             fileChooser.showOpenDialog(frame);
@@ -39,6 +52,11 @@ public class DctController {
                         applyBtn.setEnabled(true);
                     });
                 }
+
+                // set max F to smallest side of loaded image
+                int maxF = Math.min(loadedImage.getWidth(), loadedImage.getHeight());
+                spinnerF.setModel(new SpinnerNumberModel(8, 1, maxF, 1));
+                
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(frame, "Errore caricamento immagine: " + ex.getMessage());
@@ -64,8 +82,11 @@ public class DctController {
                 protected void done() {
                     try {
                         BufferedImage out = get();
+                        outputImage = out;
                         outputLabel.setIcon(scaledIcon(out, outputLabel.getWidth(), outputLabel.getHeight()));
                         outputLabel.setText(null);
+
+                        saveBtn.setEnabled(true);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(frame, "Errore: " + ex.getMessage());
@@ -74,6 +95,44 @@ public class DctController {
                     }
                 }
             }.execute();
+        });
+
+        saveBtn.addActionListener(e -> {
+            if (outputImage == null) {
+                JOptionPane.showMessageDialog(frame, "Nessun output disponibile da salvare. Applica la DCT prima.");
+                return;
+            }
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new FileNameExtensionFilter("BMP images", "bmp"));
+            // propose a default filename based on the loaded file
+            String defaultName = "output_compressed.bmp";
+            try {
+                if (loadedFile != null) {
+                    String name = loadedFile.getName();
+                    int dot = name.lastIndexOf('.');
+                    if (dot > 0) name = name.substring(0, dot);
+                    defaultName = name + "_compressed.bmp";
+                }
+            } catch (Exception ignored) {}
+            fileChooser.setSelectedFile(new File(fileChooser.getCurrentDirectory(), defaultName));
+            int res = fileChooser.showSaveDialog(frame);
+            if (res != JFileChooser.APPROVE_OPTION) return;
+            try {
+                File file = fileChooser.getSelectedFile();
+                if (file == null) return;
+                String path = file.getAbsolutePath();
+                if (!path.toLowerCase().endsWith(".bmp")) {
+                    file = new File(path + ".bmp");
+                }
+                if (file.exists()) {
+                    int ok = JOptionPane.showConfirmDialog(frame, "File esistente. Sovrascrivere?", "Conferma sovrascrittura", JOptionPane.YES_NO_OPTION);
+                    if (ok != JOptionPane.YES_OPTION) return;
+                }
+                ImageIO.write(outputImage, "bmp", file);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Errore salvataggio immagine: " + ex.getMessage());
+            }
         });
     }
 

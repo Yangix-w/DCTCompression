@@ -20,12 +20,13 @@ public class DctApp {
     private SpinnerNumberModel modelD;
     private JButton applyBtn;
     private JButton loadBtn;
+    private JButton saveBtn;
 
     DctController controller = new DctController();
 
     public DctApp() {
         createUI();
-        controller.attachListeners(loadBtn,applyBtn, spinnerF, spinnerD, outputLabel, frame, imageLabel);
+        controller.attachListeners(loadBtn, applyBtn, saveBtn, spinnerF, spinnerD, outputLabel, frame, imageLabel);
     }
 
     private void createUI() {
@@ -58,18 +59,23 @@ public class DctApp {
 
         spinnerF = new JSpinner(new SpinnerNumberModel(8, 1, 64, 1));
         ((JSpinner.DefaultEditor) spinnerF.getEditor()).getTextField().setColumns(3);
-        spinnerF.setPreferredSize(new Dimension(200, 30));
+        spinnerF.setPreferredSize(new Dimension(150, 30));
 
         modelD = new SpinnerNumberModel(8, 0, 14, 1);
         spinnerD = new JSpinner(modelD);
         ((JSpinner.DefaultEditor) spinnerD.getEditor()).getTextField().setColumns(3);
-        spinnerD.setPreferredSize(new Dimension(200, 30));
+        spinnerD.setPreferredSize(new Dimension(150, 30));
 
         JLabel rangeLabel = new JLabel("(range d: [0, 14])");
         applyBtn = new JButton("Applica DCT2");
         applyBtn.setEnabled(false);
         applyBtn.setFocusPainted(false);
         applyBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        saveBtn = new JButton("Salva BMP");
+        saveBtn.setEnabled(false);
+        saveBtn.setFocusPainted(false);
+        saveBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         spinnerF.addChangeListener(e -> {
             int F = (int) spinnerF.getValue();
@@ -92,6 +98,7 @@ public class DctApp {
         paramsPanel.add(labelD); paramsPanel.add(spinnerD);
         paramsPanel.add(rangeLabel);
         paramsPanel.add(applyBtn);
+        paramsPanel.add(saveBtn);
 
         // images panel
         imageLabel.setPreferredSize(new Dimension(400, 400));
