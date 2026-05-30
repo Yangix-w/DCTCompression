@@ -9,10 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-
 public class Main {
+    private static final int CONVERT_IN_MILLI = 1_000_000;
+
     public static void main(String[] args) {
-        int n = 1000; //Grandezza massima delle matrici
+        //test();
+        int n = 1000; //Limite massima delle matrici
         double[][] matrix;
         SimpleMatrix sm;
         ArrayList<Double> customDctTime = new ArrayList<>();
@@ -21,7 +23,7 @@ public class Main {
         long endTime;
         DCT customDct = new DCT();
         DoubleDCT_2D fftDct;
-        for(int i = 10; i < n; i+=10) {
+        for(int i = 10; i <= n; i+=10) {
             System.out.println("Matrix dimension: " + i);
             matrix = generateMatrix(i);
             sm = new SimpleMatrix(matrix);
@@ -29,13 +31,13 @@ public class Main {
             startTime = System.nanoTime();
             customDct.dct2(sm);
             endTime = System.nanoTime();
-            customDctTime.add((double)(endTime - startTime)/1000000); // Converti in millisecondi
+            customDctTime.add((double)(endTime - startTime)/CONVERT_IN_MILLI); // Converti in millisecondi
             //Misura del tempo per la DCT di JTransforms
             fftDct = new DoubleDCT_2D(i, i);
             startTime = System.nanoTime();
             fftDct.forward(matrix, true);
             endTime = System.nanoTime();
-            fftDctTime.add((double)(endTime - startTime)/1000000); // Converti in millisecondi
+            fftDctTime.add((double)(endTime - startTime)/CONVERT_IN_MILLI); // Converti in millisecondi
          }
 
          // Salva i dati in CSV nella cartella results
@@ -76,4 +78,35 @@ public class Main {
               e.printStackTrace();
           }
       }
+    public static void test(){
+        SimpleMatrix m = new SimpleMatrix(new double[][]{
+                {231, 32, 233, 161, 24, 71, 140, 245},
+                {247, 40, 248, 245, 124, 204, 36, 107},
+                {234, 202, 245, 167, 9, 217, 239, 173},
+                {193, 190, 100, 167, 43, 180, 8, 70},
+                {11, 24, 210, 177, 81, 243, 8, 112},
+                {97, 195, 203, 47, 125, 114, 165, 181},
+                {193, 70, 174, 167, 41, 30, 127, 245},
+                {87, 149, 57, 192, 65, 129, 178, 228}
+        });
+        DCT dct = new DCT();
+        SimpleMatrix c = dct.dct2(m);
+        System.out.println("DCT:");
+        c.print();
+        SimpleMatrix f = dct.idct2(c);
+        System.out.println("IDCT:");
+        f.print();
+
+        double[][] a = c.toArray2();
+        DoubleDCT_2D fftDct = new DoubleDCT_2D(8, 8);
+        fftDct.forward(a, true);
+        System.out.println("DCT JTransforms:");
+        for (double[] doubles : a) {
+            for (double aDouble : doubles) {
+                System.out.print(aDouble + " ");
+            }
+        }
+
+
+    }
 }
