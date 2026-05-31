@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 public class ImageService {
@@ -35,7 +36,7 @@ public class ImageService {
         int newHeight = (origHeight / F) * F;
 
         // Crea una nuova immagine vuota per i risultati in toni di grigio
-        BufferedImage resultImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage resultImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
 
         // Scorri l'immagine a blocchi di F x F
         for (int y = 0; y < newHeight; y += F) {
