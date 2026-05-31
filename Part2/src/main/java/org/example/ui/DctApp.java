@@ -111,6 +111,13 @@ public class DctApp {
             }
         });
 
+        outputLabel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                controller.updateOutputIcon(outputLabel);
+            }
+        });
+
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imageLabel, outputLabel);
         splitPane.setResizeWeight(0.5);
         splitPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3));

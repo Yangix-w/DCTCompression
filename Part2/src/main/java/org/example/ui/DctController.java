@@ -150,4 +150,12 @@ public class DctController {
         imageLabel.setIcon(scaledIcon(loadedImage, w, h));
         imageLabel.setText(null);
     }
+
+    protected void updateOutputIcon(JLabel outputLabel) {
+        if (outputImage == null) return;
+        int w = outputLabel.getWidth(), h = outputLabel.getHeight();
+        if (w <= 0 || h <= 0) return;
+        outputLabel.setIcon(scaledIcon(outputImage, w, h));
+        outputLabel.setText(null);
+    }
 }
