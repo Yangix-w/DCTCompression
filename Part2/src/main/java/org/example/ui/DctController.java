@@ -1,11 +1,20 @@
 package org.example.ui;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class DctController {
@@ -28,23 +37,23 @@ public class DctController {
         JLabel imageLabel
     ) {
         loadBtn.addActionListener(e -> {
-            if (loadedImage != null) {
-                loadedImage = null;
-                loadedFile = null;
-                outputImage = null;
-                imageLabel.setIcon(null);
-                imageLabel.setText("Nessuna immagine caricata");
-                outputLabel.setIcon(null);
-                outputLabel.setText("Output");
-                applyBtn.setEnabled(false);
-            }
 
-            JFileChooser fileChooser = new JFileChooser();
+            JFileChooser fileChooser = new JFileChooser("./Part2/images");
             fileChooser.setFileFilter(new FileNameExtensionFilter("BMP images", "bmp"));
             fileChooser.showOpenDialog(frame);
             try {
                 File file = fileChooser.getSelectedFile();
                 if (file != null) {
+                    if (loadedImage != null) {
+                        loadedImage = null;
+                        loadedFile = null;
+                        outputImage = null;
+                        imageLabel.setIcon(null);
+                        imageLabel.setText("Nessuna immagine caricata");
+                        outputLabel.setIcon(null);
+                        outputLabel.setText("Output");
+                        applyBtn.setEnabled(false);
+                    }
                     loadedFile = file;
                     loadedImage = ImageIO.read(loadedFile);
                     SwingUtilities.invokeLater(() -> {
@@ -59,7 +68,7 @@ public class DctController {
                 
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, "Errore caricamento immagine: " + ex.getMessage());
+                //JOptionPane.showMessageDialog(frame, "Errore caricamento immagine: " + ex.getMessage());
             }
         });
 
