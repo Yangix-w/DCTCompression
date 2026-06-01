@@ -59,4 +59,5 @@ Assicurarsi di trovarsi nella root del progetto o nella directory corrispondente
 mvn clean package -DskipTests
 
 # Avvia l'interfaccia grafica
-java -jar target/Part2-1.0-SNAPSHOT.jar
+java -jar target\Part2-1.0-SNAPSHOT.jar
+```
