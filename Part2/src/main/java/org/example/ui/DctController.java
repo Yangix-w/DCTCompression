@@ -35,7 +35,8 @@ public class DctController {
         JSpinner spinnerD,
         JLabel outputLabel,
         JFrame frame,
-        JLabel imageLabel
+        JLabel imageLabel,
+        SpinnerNumberModel modelF
     ) {
         loadBtn.addActionListener(e -> {
 
@@ -65,7 +66,8 @@ public class DctController {
 
                 // set max F to smallest side of loaded image
                 int maxF = Math.min(loadedImage.getWidth(), loadedImage.getHeight());
-                spinnerF.setModel(new SpinnerNumberModel(8, 1, maxF, 1));
+                modelF.setMaximum(maxF);
+                modelF.setValue(8);
                 
             } catch (Exception ex) {
                 ex.printStackTrace();

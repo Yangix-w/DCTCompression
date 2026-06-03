@@ -17,6 +17,7 @@ public class DctApp {
     // Controls
     private JSpinner spinnerF;
     private JSpinner spinnerD;
+    private SpinnerNumberModel modelF;
     private SpinnerNumberModel modelD;
     private JButton applyBtn;
     private JButton loadBtn;
@@ -26,7 +27,7 @@ public class DctApp {
 
     public DctApp() {
         createUI();
-        controller.attachListeners(loadBtn, applyBtn, saveBtn, spinnerF, spinnerD, outputLabel, frame, imageLabel);
+        controller.attachListeners(loadBtn, applyBtn, saveBtn, spinnerF, spinnerD, outputLabel, frame, imageLabel, modelF);
     }
 
     private void createUI() {
@@ -57,7 +58,8 @@ public class DctApp {
         loadBtn.setFocusPainted(false);
         loadBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        spinnerF = new JSpinner(new SpinnerNumberModel(8, 1, 64, 1));
+        modelF = new SpinnerNumberModel(8, 1, 64, 1);
+        spinnerF = new JSpinner(modelF);
         ((JSpinner.DefaultEditor) spinnerF.getEditor()).getTextField().setColumns(3);
         spinnerF.setPreferredSize(new Dimension(150, 30));
 
