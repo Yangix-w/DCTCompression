@@ -127,6 +127,8 @@ public class Main {
                 {193, 70, 174, 167, 41, 30, 127, 245},
                 {87, 149, 57, 192, 65, 129, 178, 228}
         });
+        double[][] a = m.toArray2();
+
         DCT dct = new DCT();
         SimpleMatrix c = dct.dct2(m);
         System.out.println("DCT:");
@@ -135,14 +137,14 @@ public class Main {
         System.out.println("IDCT:");
         f.print();
 
-        double[][] a = c.toArray2();
         DoubleDCT_2D fftDct = new DoubleDCT_2D(8, 8);
         fftDct.forward(a, true);
         System.out.println("DCT JTransforms:");
-        for (double[] doubles : a) {
-            for (double aDouble : doubles) {
-                System.out.print(aDouble + " ");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(a[i][j] + " ");
             }
+            System.out.println();
         }
     }
 
