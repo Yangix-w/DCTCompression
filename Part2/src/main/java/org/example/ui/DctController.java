@@ -146,10 +146,6 @@ public class DctController {
         });
     }
 
-    // static ImageIcon scaledIcon(BufferedImage img, int maxW, int maxH) {
-    //     double scale = Math.min((double) maxW / img.getWidth(), (double) maxH / img.getHeight());
-    //     return new ImageIcon(img.getScaledInstance((int)(img.getWidth()*scale), (int)(img.getHeight()*scale), Image.SCALE_SMOOTH));
-    // }
     static ImageIcon scaledIcon(BufferedImage img, int maxW, int maxH) {
         double scale = Math.min((double) maxW / img.getWidth(), (double) maxH / img.getHeight());
         int targetW = (int) (img.getWidth() * scale);

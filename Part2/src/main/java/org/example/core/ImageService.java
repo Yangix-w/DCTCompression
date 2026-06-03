@@ -1,6 +1,7 @@
 package org.example.core;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +27,14 @@ public class ImageService {
      */
     public BufferedImage processImage(File imageFile, int F, int d) throws IOException {
         // Leggi l'immagine
-        BufferedImage originalImg = ImageIO.read(imageFile);
+        BufferedImage rawImg = ImageIO.read(imageFile);
+
+        // Disegniamo l'immagine su un nuovo canvas TYPE_INT_RGB per forzare 
+        // una corretta interpretazione del colore ed evitare il bug di getRGB()
+        BufferedImage originalImg = new BufferedImage(rawImg.getWidth(), rawImg.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = originalImg.createGraphics();
+        g2.drawImage(rawImg, 0, 0, null);
+        g2.dispose();
 
         int origWidth = originalImg.getWidth();
         int origHeight = originalImg.getHeight();
