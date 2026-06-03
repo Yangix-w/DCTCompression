@@ -42,11 +42,11 @@ public class DCT {
      */
     private SimpleMatrix computeDct(SimpleMatrix matrix, int n, int m, SimpleMatrix dn, SimpleMatrix dm) {
         for(int j = 0; j < n; j++){
-            // moltiplicate dn to the column j of c and store the result in the column j of c
+            // moltiplicate dm to the row j of c and store the result in the row j of c
             matrix.setRow(j, 0, dm.mult(matrix.extractVector(true, j).transpose()).getDDRM().getData());
         }
         for(int l = 0; l < m; l++){
-            // moltiplicate dm to the row l of c and store the result in the row l of c
+            // moltiplicate dn to the column l of c and store the result in the column l of c
             matrix.setColumn(l, 0, dn.mult(matrix.extractVector(false, l)).getDDRM().getData());
         }
         return matrix;
