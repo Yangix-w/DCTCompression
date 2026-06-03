@@ -1,6 +1,7 @@
 package org.example.ui;
 
-import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -145,9 +146,30 @@ public class DctController {
         });
     }
 
+    // static ImageIcon scaledIcon(BufferedImage img, int maxW, int maxH) {
+    //     double scale = Math.min((double) maxW / img.getWidth(), (double) maxH / img.getHeight());
+    //     return new ImageIcon(img.getScaledInstance((int)(img.getWidth()*scale), (int)(img.getHeight()*scale), Image.SCALE_SMOOTH));
+    // }
     static ImageIcon scaledIcon(BufferedImage img, int maxW, int maxH) {
         double scale = Math.min((double) maxW / img.getWidth(), (double) maxH / img.getHeight());
-        return new ImageIcon(img.getScaledInstance((int)(img.getWidth()*scale), (int)(img.getHeight()*scale), Image.SCALE_SMOOTH));
+        int targetW = (int) (img.getWidth() * scale);
+        int targetH = (int) (img.getHeight() * scale);
+
+        // Creiamo una nuova immagine forzando il color model standard RGB
+        // Questo risolve i problemi di gamma/luminosità con i file BMP in scala di grigi
+        BufferedImage resizedImg = new BufferedImage(targetW, targetH, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        // Impostiamo l'alta qualità per l'interpolazione (sostituisce Image.SCALE_SMOOTH)
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Disegniamo l'immagine originale ridimensionata sul nuovo buffer
+        g2.drawImage(img, 0, 0, targetW, targetH, null);
+        g2.dispose();
+
+        return new ImageIcon(resizedImg);
     }
 
     // scale currently loaded image to fit the imageLabel's size
