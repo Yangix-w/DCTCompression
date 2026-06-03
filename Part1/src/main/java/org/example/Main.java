@@ -11,13 +11,27 @@ import org.example.custom_dct.DCT;
 import org.jtransforms.dct.DoubleDCT_2D;
 
 public class Main {
+    /**
+     * Costante per convertire il tempo da nanosecondi a millisecondi
+     * 1 millisecondo = 1.000.000 nanosecondi
+     */
     private static final int CONVERT_IN_MILLI = 1_000_000;
 
+    /**
+     * Punto di ingresso dell'applicazione. Esegue il benchmark della DCT.
+     * @param args
+     */
     public static void main(String[] args) {
         //test();
         benchmarkDCT();
     }
 
+    /**
+     * Esegue il benchmark della DCT personalizzata e della DCT di JTransforms su matrici di dimensioni crescenti.
+     * I tempi di esecuzione vengono salvati in un file CSV nella cartella "results".
+     * La DCT personalizzata viene misurata utilizzando la classe DCT, mentre la DCT di JTransforms viene misurata utilizzando la classe DoubleDCT_2D.
+     * 
+     */
     public static void benchmarkDCT(){
         int n = 1000; //Limite massima delle matrici
         double[][] matrix;
@@ -48,21 +62,35 @@ public class Main {
         saveToCsv("./Part1/results/dct_times.csv", customDctTime, fftDctTime);
     }
 
-        public static double[][] generateMatrix(int n){
-             double[][] matrix = new double[n][n];
-             for(int i = 0; i < n; i++){
-                 for(int j = 0; j < n; j++){
-                     matrix[i][j] = Math.random()*100;
-                 }
-             }
-             return matrix;
+    /**
+     * Genera una matrice quadrata di dimensione n x n con valori casuali compresi tra 0 e 100.
+     * 
+     * @param n Dimensione della matrice
+     * @return Matrice generata
+     */
+    public static double[][] generateMatrix(int n){
+        double[][] matrix = new double[n][n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                matrix[i][j] = Math.random()*100;
+            }
         }
-        
-        public static void saveToCsv(String filename, ArrayList<Double> customDctTime, ArrayList<Double> fftDctTime) {
-            try {
-                // Crea la cartella "results" se non esiste
-                String dirPath = "results";
-                Files.createDirectories(Paths.get(dirPath));
+        return matrix;
+    }
+    
+    /**
+     * Salva i tempi di esecuzione della DCT personalizzata e della DCT di JTransforms in un file CSV.
+     * Il file CSV conterrà le dimensioni delle matrici e i tempi di esecuzione corrispondenti per entrambe le implementazioni.
+     * 
+     * @param filename Nome del file CSV da salvare
+     * @param customDctTime Lista dei tempi di esecuzione della DCT personalizzata in millisecondi
+     * @param fftDctTime Lista dei tempi di esecuzione della DCT di JTransforms in millisecondi
+     */
+    public static void saveToCsv(String filename, ArrayList<Double> customDctTime, ArrayList<Double> fftDctTime) {
+        try {
+            // Crea la cartella "results" se non esiste
+            String dirPath = "results";
+            Files.createDirectories(Paths.get(dirPath));
 
             // Scrivi il file CSV
             try (FileWriter writer = new FileWriter(filename)) {
@@ -82,6 +110,12 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Metodo di test per verificare la correttezza della DCT personalizzata e la correttezza della DCT di JTransforms.
+     * Viene dato una matrice 8x8 con valori predefiniti, viene calcolata la DCT utilizzando entrambe le implementazioni e vengono stampati i risultati.
+     * 
+     */
     public static void test(){
         SimpleMatrix m = new SimpleMatrix(new double[][]{
                 {231, 32, 233, 161, 24, 71, 140, 245},
